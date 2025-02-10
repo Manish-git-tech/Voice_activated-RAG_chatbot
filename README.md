@@ -85,7 +85,7 @@ Voice_activated-RAG_chatbot is a long-term communication chatbot with persistent
 1. **Run the Streamlit App:**
 
     ```bash
-    streamlit run app.py
+    streamlit run storage+audio.py
     ```
 
 2. **Using the Chatbot:**
