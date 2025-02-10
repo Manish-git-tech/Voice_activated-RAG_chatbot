@@ -47,7 +47,7 @@ Voice_activated-RAG_chatbot is a long-term communication chatbot with persistent
 1. **Clone the repository:**
 
     ```bash
-    git clone https://github.com/yourusername/Voice_activated-RAG_chatbot.git
+    git clone https://github.com/Manish-git-tech/Voice_activated-RAG_chatbot.git
     cd Voice_activated-RAG_chatbot
     ```
 
@@ -85,7 +85,7 @@ Voice_activated-RAG_chatbot is a long-term communication chatbot with persistent
 1. **Run the Streamlit App:**
 
     ```bash
-    streamlit run storage+audio.py
+    streamlit run GUI_chatBOT.py
     ```
 
 2. **Using the Chatbot:**
