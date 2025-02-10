@@ -187,6 +187,16 @@ def retreive_embeddings(prompt):
     st.write("Best retrieved context:", best_embedding)
     return best_embedding
 
+
+# --------------------
+# summarising past conversations if they are relevant to users current query
+# ---------------------
+def summarise(user_prompt, old_context):
+    is_relevant=ollama.generate(model=chat_model,prompt=f'for a ai chat system, these are the most relevat past converstions searched by the embedding model and i dont beleive in the embedding mode{str(old_context)}. You have to tell whether these are related to the use query which is {user_prompt}. Make your respones very very short and consise. make sure to say "YES" or "NO" at the begining of your prompt and provide the most relevant points. example "YES, the data is relevant..." or "NO, the data is not relevant....". dont say things like the embedding model has provided correct response. make your answers to the point. your task is just to say yes and no and which information id is the most important and matching to the user query. here is the document contencts which the user has uploaded for reference "Document context: {st.session_state.document_text}\n Remember the past conversations and the older conversations can have different data for same questions. Always prefer the data of the document over past conversaitons.')
+    output=ollama.generate(model=chat_model,prompt=f'summarise this prompt which acts as a conversation history to an ai model. include any information in your response which you think is important for the ai to respond correctly to the user. Also make sure not to repeat the exact words of the ai but summarise it and make is shorter, very very shorter. heres the older conversations between ai and user {old_context} also for you help i am adding the present user prompt{user_prompt}. and "MOST IMPORTANT PART" this is the output of another AI which tells you if the given older conversation is useful or not -{is_relevant['response']}. If it says "NO" then "Make sure NOT to include the data from past conversations into your summary,here is the document contencts which the user has uploaded for reference "Document context: {st.session_state.document_text}\n .Remember the past conversations and the older conversations can have different data for same questions. Always prefer the data of the document over past conversaitons. try to make your responses very short. Do not say things like do you need further assistance., now answer.')
+    print(output['response'])
+    return output['response']
+
 # --------------------
 # Query processing function
 # --------------------
@@ -209,9 +219,11 @@ def process_query(prompt):
     messages = [
         {"role": "system", "content": f"Document context: {st.session_state.document_text[:4000]}\n"},
         {"role": "system", "content": f"Relevant past conversations: {old_context}"},
+        {"role": "system", "content": f"Past History summarised by an AI {summarise(prompt,old_context)}"},
+        {"role": "system", "content": "Remember the past conversations and the older conversations can have different data for same questions. Always prefer the data of the document over past conversaitons."},
         {"role": "system", "content": f"{st.session_state.chats[0]['content']}\n{context}"},
         *st.session_state.chats[1:],
-        {"role": "user", "content": prompt}
+        {"role": "user", "content": prompt }
     ]
     
     with st.chat_message("assistant"):
@@ -231,7 +243,7 @@ def process_query(prompt):
             final_response = crop_response(response_text)
             store_conversations(prompt, final_response)
             st.session_state.messages.append({"role": "assistant", "content": final_response})
-            text_to_speech(final_response)
+            #text_to_speech(final_response)
 
 # --------------------
 # Sidebar controls and document upload
