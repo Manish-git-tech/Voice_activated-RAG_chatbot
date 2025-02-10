@@ -1,0 +1,8 @@
+streamlit
+ollama
+mysql-connector-python
+SpeechRecognition
+pyttsx3
+PyPDF2
+docx2txt
+chromadb
